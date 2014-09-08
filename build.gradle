@@ -1,0 +1,96 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+		classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.0'
+		classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
+        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.5-beta-6'
+        classpath 'org.codehaus.groovy:groovy-backports-compat23:2.3.6'
+    }
+}
+
+apply plugin: 'org.asciidoctor.gradle.asciidoctor'
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'codenarc'
+apply plugin: 'cobertura'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'com.github.hierynomus.license'
+apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'build-dashboard'
+apply from: 'gradle/publish.gradle'
+
+repositories {
+	mavenLocal()
+    mavenCentral()
+	jcenter()
+}
+
+dependencies {
+	compile 'org.walkmod:walkmod-core:1.0.7'
+	compile 'org.walkmod:walkmod-cmd:1.0.6'
+	compile gradleApi()
+
+    testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
+        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
+    testCompile 'cglib:cglib-nodep:2.2.2'
+}
+
+asciidoctor {
+//	sourceDir =  file('.')
+//    sourceDocumentNames = files('README.adoc')
+    logDocuments = true
+    options = [
+        attributes: [
+            icons: 'font',
+            toc: 'right',
+            'source-highlighter': 'highlightjs'
+        ]
+    ]
+}
+
+license {
+    header = rootProject.file('config/HEADER')
+    strictCheck = true
+    ignoreFailures = false
+    mapping {
+        java ='SLASHSTAR_STYLE'
+        groovy ='SLASHSTAR_STYLE'
+    }
+    ext.year = '2014'
+    excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc'])
+}
+
+cobertura {
+    coverageFormats = ['html', 'xml']
+    coverageSourceDirs = sourceSets.main.groovy.srcDirs
+}
+
+codenarc {
+    configFile = file('config/codenarc/codenarc.groovy')
+    // run codenarc on production sources only
+    sourceSets = [project.sourceSets.main]
+}
+
+task sourceJar(type: Jar) {
+    group 'Build'
+    description 'An archive of the source code'
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    sourceJar
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.12'
+}
