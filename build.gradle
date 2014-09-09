@@ -4,7 +4,6 @@ buildscript {
     }
 
     dependencies {
-		classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.0'
 		classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
@@ -14,10 +13,7 @@ buildscript {
     }
 }
 
-apply plugin: 'org.asciidoctor.gradle.asciidoctor'
 apply plugin: 'groovy'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
 apply plugin: 'codenarc'
 apply plugin: 'cobertura'
 apply plugin: 'com.github.kt3k.coveralls'
@@ -33,28 +29,15 @@ repositories {
 }
 
 dependencies {
-	compile 'org.walkmod:walkmod-core:1.0.7'
+	compile 'org.walkmod:walkmod-core:1.0.6'
 	compile 'org.walkmod:walkmod-cmd:1.0.6'
 	compile gradleApi()
 
-    testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
+    testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
     testCompile 'cglib:cglib-nodep:2.2.2'
-}
-
-asciidoctor {
-//	sourceDir =  file('.')
-//    sourceDocumentNames = files('README.adoc')
-    logDocuments = true
-    options = [
-        attributes: [
-            icons: 'font',
-            toc: 'right',
-            'source-highlighter': 'highlightjs'
-        ]
-    ]
 }
 
 license {
@@ -73,6 +56,8 @@ cobertura {
     coverageFormats = ['html', 'xml']
     coverageSourceDirs = sourceSets.main.groovy.srcDirs
 }
+
+cobertura.coverageSourceDirs = sourceSets.main.groovy.srcDirs
 
 codenarc {
     configFile = file('config/codenarc/codenarc.groovy')

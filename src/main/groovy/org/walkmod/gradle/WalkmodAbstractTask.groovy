@@ -17,48 +17,77 @@ package org.walkmod.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.walkmod.WalkModFacade
 
 
 /**
+ * Base abstract Walkmod task 
  * @author abelsromero
  */
 abstract class WalkmodAbstractTask extends DefaultTask {
 
-	private static final boolean IS_WINDOWS = System.getProperty('os.name').contains('Windows')
-	private static final String DOUBLE_BACKLASH = '\\\\'
-	private static final String BACKLASH = '\\'
-
 	public static final String WALKMOD_FACTORY_CLASSNAME = 'org.walkmod.WalkModFacade'
 
 	@Optional
-	protected List<String> chains = null;
+	protected List<String> chains
 
 	@Optional
-	protected offline = false;
+	protected Boolean offline
 
 	@Optional
-	protected verbose = true;
+	protected Boolean verbose
 
 	@Optional
-	protected boolean showErrors = true;
-	
-	@Optional @InputFile
-	protected File configFile = new File("walkmod.xml");
+	protected Boolean showErrors
 
-	@Optional @InputFile
-	protected File sources
+	@Optional
+	protected File configFile
 
+	/**
+	 * Delegated walkmod service  
+	 */
 	WalkmodProxy walkmodProxy
+	final WalkmodExtension extension
 
 	Configuration classpath
-	private static ClassLoader cl
+	static ClassLoader cl
 
-	WalkmodAbstractTask() {
+	/* Unused
+	private static final boolean IS_WINDOWS = System.getProperty('os.name').contains('Windows')
+
+	private static final String DOUBLE_BACKLASH = '\\\\'
+	private static final String BACKLASH = '\\'
+	
+	private static String normalizePath(String path) {
+		if (IS_WINDOWS) {
+			path = path.replace(DOUBLE_BACKLASH, BACKLASH)
+			path = path.replace(BACKLASH, DOUBLE_BACKLASH)
+		}
+		return path
 	}
+	*/
+	
+	protected WalkmodAbstractTask () {
+		if (!extension) {
+			extension = project.extensions.getByName(WalkmodPlugin.EXTENSION)
+		}
+	}
+
+	@TaskAction
+	void executeTask() {
+		validateInputs()
+		initWalkmod()
+
+		executeTask(chains)
+
+		if (!walkmodProxy) {
+			initWalkmod()
+		}
+	}
+
+	abstract void executeTask(String... chains)
 
 	/**
 	 * Validates input values. If an input value is not valid an exception is thrown.
@@ -67,38 +96,14 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 		setupClassLoader()
 	}
 
-	private static String normalizePath(String path) {
-		if (IS_WINDOWS) {
-			path = path.replace(DOUBLE_BACKLASH, BACKLASH)
-			path = path.replace(BACKLASH, DOUBLE_BACKLASH)
-		}
-		return path
-	}
+	void initWalkmod() {
 
-	@TaskAction
-	void processTask() {
-		validateInputs()
-		instantiateWalkmod()
-
-		executeTask(null)
-		
-		if (!walkmodProxy) {
-			instantiateWalkmod()
-		}
-	}
-	
-	abstract void executeTask(String... chains);
-
-	private void instantiateWalkmod() {
 		//            walkmodProxy = new WalkmodProxyImpl(delegate: loadClass(WALKMOD_FACTORY_CLASSNAME).create(null as String))
 		if (!walkmodProxy) {
 			logger.lifecycle("Creating facade config:$configFile o:$offline v:$verbose e:$showErrors")
+//			def proxy2 = cl.loadClass(WALKMOD_FACTORY_CLASSNAME, true).newInstance(configFile, offline, verbose, showErrors)
 			walkmodProxy = new WalkmodProxyImpl(delegate: new WalkModFacade(configFile, offline, verbose, showErrors))
 		}
-	}
-
-	private static Class loadClass(String className) {
-		cl.loadClass(className)
 	}
 
 	private void setupClassLoader() {
@@ -110,4 +115,29 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 			cl = Thread.currentThread().contextClassLoader
 		}
 	}
+
+	List<String> getChains() {
+		chains ?: extension.chains
+	}
+
+	Object getOffline() {
+		offline ?: extension.offline
+	}
+
+	Object getVerbose() {
+		verbose ?: extension.verbose
+	}
+
+	boolean isShowErrors() {
+		showErrors ?: extension.showErrors
+	}
+
+	File getConfigFile() {
+		configFile ?: extension.configFile
+	}
+
+	Configuration getClasspath() {
+		classpath
+	}
+
 }

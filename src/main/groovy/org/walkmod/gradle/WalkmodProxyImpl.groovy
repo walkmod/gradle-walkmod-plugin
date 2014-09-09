@@ -15,8 +15,6 @@
  */
 package org.walkmod.gradle
 
-import java.io.File;
-import java.util.Map;
 
 /**
  * @author abelsromero
@@ -26,17 +24,17 @@ class WalkmodProxyImpl implements WalkmodProxy {
     def delegate
 
 	@Override
-	public void check(String... chains) {
+	void check(String... chains) {
 		delegate.check(chains)
 	}
 	
 	@Override
-	public void apply(String... chains) {
+	void apply(String... chains) {
 		delegate.apply(chains)
 	}
 
 	@Override
-	public void install() {
+	void install() {
 		delegate.install()
 	}
 }

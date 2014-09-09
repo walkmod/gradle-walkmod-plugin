@@ -24,8 +24,18 @@ import org.gradle.api.Project
 class WalkmodExtension {
 
     String version = '1.0.6'
+	
+	List<String> chains = null
 
-    final Project project
+	Boolean offline = Boolean.FALSE
+
+	Boolean verbose = Boolean.TRUE
+
+	Boolean showErrors = Boolean.TRUE
+	
+	File configFile = new File('walkmod.xml')
+
+    Project project
 
     WalkmodExtension(Project project) {
         this.project = project

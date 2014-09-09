@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.walkmod.gradle;
+package org.walkmod.gradle
 
 
 class WalkmodCheckTask extends WalkmodAbstractTask {
 
 	@Override
-	public void executeTask(String... chains) {
+	void executeTask(String... chains) {
 		walkmodProxy.check(chains)
 	}
 

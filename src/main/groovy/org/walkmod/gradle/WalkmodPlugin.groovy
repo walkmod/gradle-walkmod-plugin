@@ -33,11 +33,7 @@ class WalkmodPlugin implements Plugin<Project> {
 	void apply(Project project) {
 		project.apply(plugin: 'base')
 
-		WalkmodExtension extension = project.extensions.create(EXTENSION, WalkmodExtension, project)
-
-		project.repositories {
-			jcenter()
-		}
+		project.extensions.create(EXTENSION, WalkmodExtension, project)
 
 		Configuration configuration = project.configurations.maybeCreate(EXTENSION)
 
@@ -50,12 +46,12 @@ class WalkmodPlugin implements Plugin<Project> {
 			}
 		}
 
-		project.task("walkmodCheck", type: WalkmodCheckTask, group: WALKMOD_GROUP) {
+		project.task('walkmodCheck', type: WalkmodCheckTask, group: WALKMOD_GROUP) {
 			description = 'Checks'
 			classpath 	= configuration
 		}
 
-		project.task("walkmodApply", type: WalkmodApplyTask, group: WALKMOD_GROUP) {
+		project.task('walkmodApply', type: WalkmodApplyTask, group: WALKMOD_GROUP) {
 			description = 'Applies'
 			classpath 	= configuration
 		}
