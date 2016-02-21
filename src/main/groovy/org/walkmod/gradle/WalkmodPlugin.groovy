@@ -38,22 +38,27 @@ class WalkmodPlugin implements Plugin<Project> {
 		Configuration configuration = project.configurations.maybeCreate(EXTENSION)
 
 		project.afterEvaluate {
-			project.tasks.findAll {it instanceof WalkmodAbstractTask && !it.classpath}.each {
-				it.classpath = configuration
+			project.tasks.findAll {it instanceof WalkmodAbstractTask && !it.configuration}.each {
+				it.configuration = configuration
 			}
 			project.dependencies {
-				//                walkmod("org.walkmod:walkmod-core:${extension.version}")
+				// walkmod("org.walkmod:walkmod-core:${extension.version}")
 			}
 		}
 
 		project.task('walkmodCheck', type: WalkmodCheckTask, group: WALKMOD_GROUP) {
-			description = 'Checks'
-			classpath 	= configuration
+			description = 'Checks which classes needs to be modified according your code transformations'
+			configuration = configuration
 		}
 
 		project.task('walkmodApply', type: WalkmodApplyTask, group: WALKMOD_GROUP) {
-			description = 'Applies'
-			classpath 	= configuration
+			description = 'Upgrades code to apply all code transformations'
+			configuration = configuration
+		}
+
+		// Add configuration for plugins classpath
+		project.configurations {
+			walkmod
 		}
 
 		/*

@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenCentral()
         jcenter()
     }
 
@@ -20,24 +21,32 @@ apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'com.github.hierynomus.license'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'build-dashboard'
-apply from: 'gradle/publish.gradle'
+// apply from: 'gradle/publish.gradle'
 
 repositories {
-	mavenLocal()
-    mavenCentral()
+	// mavenLocal()
+    // mavenCentral()
 	jcenter()
 }
 
-dependencies {
-	compile 'org.walkmod:walkmod-core:1.0.6'
-	compile 'org.walkmod:walkmod-cmd:1.0.6'
-	compile gradleApi()
+ext {
+    walkmodVersion = '2.2.0'
+}
 
-    testCompile('org.spockframework:spock-core:0.7-groovy-1.8') {
+dependencies {
+    compile gradleApi()
+
+    compile "org.walkmod:walkmod-core:$walkmodVersion"
+	// compile 'org.walkmod:walkmod-cmd:1.0.6'
+
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
-    testCompile 'cglib:cglib-nodep:2.2.2'
+    testRuntime 'cglib:cglib-nodep:3.2.0'
+
+    // Version of Gradle Wrapper
+    // testRuntime 'org.codehaus.groovy:groovy-all:2.4.4'
 }
 
 license {
@@ -48,7 +57,7 @@ license {
         java ='SLASHSTAR_STYLE'
         groovy ='SLASHSTAR_STYLE'
     }
-    ext.year = '2014'
+    ext.year = '2016'
     excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc'])
 }
 
@@ -77,5 +86,5 @@ artifacts {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '1.12'
+	gradleVersion = '2.8'
 }

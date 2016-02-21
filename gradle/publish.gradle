@@ -35,10 +35,11 @@ jar {
             'Build-Time': project.buildDate,
             'Specification-Title': projectArtifactId,
             'Specification-Version': project.version,
-            'Specification-Vendor': 'asciidoctor.org',
+            'Specification-Vendor': 'walkmod.org',
             'Implementation-Title': projectArtifactId,
             'Implementation-Version': project.version,
-            'Implementation-Vendor': 'asciidoctor.org'
+            'Implementation-Vendor': 'walkmod.org'
+            'Implementation-Vendor': 'walkmod.org'
         )
     }
 }

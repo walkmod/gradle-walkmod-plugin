@@ -19,7 +19,11 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
+import org.walkmod.OptionsBuilder
 import org.walkmod.WalkModFacade
+import org.walkmod.conf.ConfigurationProvider
+import org.walkmod.conf.entities.impl.ConfigurationImpl
+import org.walkmod.gradle.configuration.GradleConfigurationProvider
 
 
 /**
@@ -27,8 +31,6 @@ import org.walkmod.WalkModFacade
  * @author abelsromero
  */
 abstract class WalkmodAbstractTask extends DefaultTask {
-
-	public static final String WALKMOD_FACTORY_CLASSNAME = 'org.walkmod.WalkModFacade'
 
 	@Optional
 	protected List<String> chains
@@ -40,7 +42,7 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 	protected Boolean verbose
 
 	@Optional
-	protected Boolean showErrors
+	protected Boolean printErrors
 
 	@Optional
 	protected File configFile
@@ -51,7 +53,7 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 	WalkmodProxy walkmodProxy
 	final WalkmodExtension extension
 
-	Configuration classpath
+	Configuration configuration
 	static ClassLoader cl
 
 	/* Unused
@@ -68,24 +70,24 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 		return path
 	}
 	*/
-	
-	protected WalkmodAbstractTask () {
-		if (!extension) {
-			extension = project.extensions.getByName(WalkmodPlugin.EXTENSION)
-		}
-	}
 
-	@TaskAction
-	void executeTask() {
+    protected WalkmodAbstractTask () {
+        if (!extension) {
+            extension = project.extensions.getByName(WalkmodPlugin.EXTENSION)
+        }
+    }
+
+    @TaskAction
+    void executeTask() {
 		validateInputs()
-		initWalkmod()
+        initWalkmod()
 
-		executeTask(chains)
+        executeTask(chains)
 
-		if (!walkmodProxy) {
-			initWalkmod()
-		}
-	}
+        if (!walkmodProxy) {
+            initWalkmod()
+        }
+    }
 
 	abstract void executeTask(String... chains)
 
@@ -93,51 +95,49 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 	 * Validates input values. If an input value is not valid an exception is thrown.
 	 */
 	private void validateInputs() {
-		setupClassLoader()
+        // setupClassLoader()
 	}
 
 	void initWalkmod() {
-
-		//            walkmodProxy = new WalkmodProxyImpl(delegate: loadClass(WALKMOD_FACTORY_CLASSNAME).create(null as String))
 		if (!walkmodProxy) {
-			logger.lifecycle("Creating facade config:$configFile o:$offline v:$verbose e:$showErrors")
-//			def proxy2 = cl.loadClass(WALKMOD_FACTORY_CLASSNAME, true).newInstance(configFile, offline, verbose, showErrors)
-			walkmodProxy = new WalkmodProxyImpl(delegate: new WalkModFacade(configFile, offline, verbose, showErrors))
+			logger.lifecycle("Creating facade config:$configFile o:$offline v:$verbose e:$printErrors")
+
+            ConfigurationProvider confProvider = new GradleConfigurationProvider(new ConfigurationImpl())
+            confProvider.defaultClassloader = project.getExtensions().findByName('walkmod').get
+            confProvider.artifacts = project.configurations.getByName('walkmod').artifacts
+
+            OptionsBuilder options = OptionsBuilder.options().offline(offline).verbose(verbose).printErrors(printErrors)
+
+            project.configurations.getByName('walkmod').artifacts.each {
+                println "$it"
+            }
+
+			walkmodProxy = new WalkmodProxyImpl(delegate: new WalkModFacade(configFile, options, confProvider))
 		}
 	}
 
-	private void setupClassLoader() {
-		if (classpath?.files) {
-			def urls = classpath.files.collect { it.toURI().toURL() }
-			cl = new URLClassLoader(urls as URL[], Thread.currentThread().contextClassLoader)
-			Thread.currentThread().contextClassLoader = cl
-		} else {
-			cl = Thread.currentThread().contextClassLoader
-		}
-	}
+    List<String> getChains() {
+        chains ?: extension.chains
+    }
 
-	List<String> getChains() {
-		chains ?: extension.chains
-	}
+    Object getOffline() {
+        offline ?: extension.offline
+    }
 
-	Object getOffline() {
-		offline ?: extension.offline
-	}
+    Object getVerbose() {
+        verbose ?: extension.verbose
+    }
 
-	Object getVerbose() {
-		verbose ?: extension.verbose
-	}
-
-	boolean isShowErrors() {
-		showErrors ?: extension.showErrors
-	}
+    boolean isShowErrors() {
+		printErrors ?: extension.printErrors
+    }
 
 	File getConfigFile() {
-		configFile ?: extension.configFile
-	}
+        configFile ?: extension.configFile
+    }
 
-	Configuration getClasspath() {
-		classpath
-	}
+    Configuration getConfiguration() {
+        configuration
+    }
 
 }

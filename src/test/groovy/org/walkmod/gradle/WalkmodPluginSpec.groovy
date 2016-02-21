@@ -26,7 +26,7 @@ import spock.lang.Specification
  *
  * @author abelsromero
  */
-class AsciidoctorPluginSpec extends Specification {
+class WalkmodPluginSpec extends Specification {
 
 	private static final String EXTENSION = 'walkmod'
 

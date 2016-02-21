@@ -7,9 +7,8 @@ Abel Salgado Romero
 :gradle-url: http://gradle.org/
 :maven-gradle-plugin: https://github.com/rpau/maven-walkmod-plugin
 :project-name: gradle-walkmod-plugin
-:walkmod-core-version: walkmod-core:1.0.7
+:walkmod-core-version: walkmod-core:2.2.0
 :ivy-url: http://ant.apache.org/ivy/
-:asciidoctor-gradle-plugin-url: https://github.com/asciidoctor/asciidoctor-gradle-plugin
 
 image:http://img.shields.io/travis/abelsromero/{project-name}/master.svg["Build Status", link="https://travis-ci.org/abelsromero/{project-name}"]
 image:http://img.shields.io/coveralls/abelsromero/{project-name}/master.svg["Coverage Status", link="https://coveralls.io/r/abelsromero/{project-name}"]

@@ -15,11 +15,7 @@
  */
 package org.walkmod.gradle
 
-import java.io.File;
-import java.util.List;
-
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.testfixtures.ProjectBuilder
 
 import spock.lang.Specification
@@ -29,7 +25,7 @@ import spock.lang.Specification
  *
  * @author abelsromero
  */
-class AsciidoctorAbstractTaskSpec extends Specification {
+class WalkmodAbstractTaskSpec extends Specification {
 
 	private static final String EXTENSION = 'walkmod'
 
@@ -48,9 +44,9 @@ class AsciidoctorAbstractTaskSpec extends Specification {
 		then:
 			WalkmodExtension extension = project.walkmod
 			extension.chains == null
-			extension.offline == false
-			extension.verbose == true
-			extension.showErrors == true
+			!extension.offline
+			extension.verbose
+			extension.printErrors
 			extension.configFile == new File("walkmod.xml")
 	}
 	
@@ -64,7 +60,7 @@ class AsciidoctorAbstractTaskSpec extends Specification {
 			task.@chains  == null
 			task.@offline == null
 			task.@verbose == null
-			task.@showErrors == null
+			task.@printErrors == null
 			task.@configFile == null
 	}
 	
@@ -78,7 +74,7 @@ class AsciidoctorAbstractTaskSpec extends Specification {
 			task.@chains  == null
 			task.@offline == null
 			task.@verbose == null
-			task.@showErrors == null
+			task.@printErrors == null
 			task.@configFile == null
 
 		then: 'returned values are the ones of the the extension'
@@ -86,15 +82,15 @@ class AsciidoctorAbstractTaskSpec extends Specification {
 			// extension values
 			WalkmodExtension extension = project.walkmod
 			extension.chains == null
-			extension.offline == false
-			extension.verbose == true
-			extension.showErrors == true
+			!extension.offline
+			extension.verbose
+			extension.printErrors
 			extension.configFile == new File("walkmod.xml")
 			// values comparision
 			task.chains  == extension.chains
 			task.offline == extension.offline
 			task.verbose == extension.verbose
-			task.showErrors == extension.showErrors
+			task.showErrors == extension.printErrors
 			task.configFile == extension.configFile
 	}
 }

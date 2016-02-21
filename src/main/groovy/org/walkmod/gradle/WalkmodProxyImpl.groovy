@@ -15,26 +15,28 @@
  */
 package org.walkmod.gradle
 
+import org.walkmod.WalkModFacade
+
 
 /**
  * @author abelsromero
  */
 class WalkmodProxyImpl implements WalkmodProxy {
 
-    def delegate
+    WalkModFacade delegate
 
-	@Override
-	void check(String... chains) {
-		delegate.check(chains)
-	}
-	
-	@Override
-	void apply(String... chains) {
-		delegate.apply(chains)
-	}
+    @Override
+    void check(String... chains) {
+        delegate.check(chains)
+    }
 
-	@Override
-	void install() {
-		delegate.install()
-	}
+    @Override
+    void apply(String... chains) {
+        delegate.apply(chains)
+    }
+
+    @Override
+    void install() {
+        delegate.install()
+    }
 }

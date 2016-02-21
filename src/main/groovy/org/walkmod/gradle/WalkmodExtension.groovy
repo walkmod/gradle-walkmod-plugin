@@ -23,7 +23,7 @@ import org.gradle.api.Project
  */
 class WalkmodExtension {
 
-    String version = '1.0.6'
+    String version = '2.2.0'
 	
 	List<String> chains = null
 
@@ -31,7 +31,7 @@ class WalkmodExtension {
 
 	Boolean verbose = Boolean.TRUE
 
-	Boolean showErrors = Boolean.TRUE
+	Boolean printErrors = Boolean.TRUE
 	
 	File configFile = new File('walkmod.xml')
 
