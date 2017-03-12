@@ -23,7 +23,9 @@ ruleset {
     }
     ruleset('rulesets/unused.xml')
     ruleset('rulesets/exceptions.xml')
-    ruleset('rulesets/logging.xml')
+    ruleset('rulesets/logging.xml'){
+        exclude 'Println'
+    }
     ruleset('rulesets/braces.xml') {
         exclude 'IfStatementBraces'
     }
@@ -33,5 +35,7 @@ ruleset {
 	    exclude 'UnnecessaryReturnKeyword '
 	}
     ruleset('rulesets/dry.xml')
-    ruleset('rulesets/design.xml')
+    ruleset('rulesets/design.xml') {
+        exclude 'Instanceof'
+    }
 }

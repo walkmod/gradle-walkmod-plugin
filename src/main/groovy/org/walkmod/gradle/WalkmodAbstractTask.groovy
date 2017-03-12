@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2017 walkmod.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,20 +56,6 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 	Configuration configuration
 	static ClassLoader cl
 
-	/* Unused
-	private static final boolean IS_WINDOWS = System.getProperty('os.name').contains('Windows')
-
-	private static final String DOUBLE_BACKLASH = '\\\\'
-	private static final String BACKLASH = '\\'
-	
-	private static String normalizePath(String path) {
-		if (IS_WINDOWS) {
-			path = path.replace(DOUBLE_BACKLASH, BACKLASH)
-			path = path.replace(BACKLASH, DOUBLE_BACKLASH)
-		}
-		return path
-	}
-	*/
 
     protected WalkmodAbstractTask () {
         if (!extension) {
@@ -79,7 +65,7 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 
     @TaskAction
     void executeTask() {
-		validateInputs()
+
         initWalkmod()
 
         executeTask(chains)
@@ -91,24 +77,20 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 
 	abstract void executeTask(String... chains)
 
-	/**
-	 * Validates input values. If an input value is not valid an exception is thrown.
-	 */
-	private void validateInputs() {
-        // setupClassLoader()
-	}
+
 
 	void initWalkmod() {
 		if (!walkmodProxy) {
-			logger.lifecycle("Creating facade config:$configFile o:$offline v:$verbose e:$printErrors")
 
+			logger.lifecycle("Creating facade config:$configFile o:$offline v:$verbose e:$printErrors")
+            String configName = 'walkmod'
             ConfigurationProvider confProvider = new GradleConfigurationProvider(new ConfigurationImpl())
-            confProvider.defaultClassloader = project.getExtensions().findByName('walkmod').get
-            confProvider.artifacts = project.configurations.getByName('walkmod').artifacts
+            confProvider.defaultClassloader = project.extensions.findByName(configName).get
+            confProvider.artifacts = project.configurations.getByName(configName).artifacts
 
             OptionsBuilder options = OptionsBuilder.options().offline(offline).verbose(verbose).printErrors(printErrors)
 
-            project.configurations.getByName('walkmod').artifacts.each {
+            project.configurations.getByName(configName).artifacts.each {
                 println "$it"
             }
 

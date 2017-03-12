@@ -16,11 +16,11 @@
 package org.walkmod.gradle
 
 
-class WalkmodInstallTask extends WalkmodAbstractTask {
+class WalkmodPatchTask extends WalkmodAbstractTask {
 
 	@Override
 	void executeTask(String... chains) {
-		walkmodProxy.install()
+		walkmodProxy.patch(chains)
 	}
 
 }

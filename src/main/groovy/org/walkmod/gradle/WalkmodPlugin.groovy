@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 the original author or authors.
+ * Copyright 2017 walkmod.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,19 +41,22 @@ class WalkmodPlugin implements Plugin<Project> {
 			project.tasks.findAll {it instanceof WalkmodAbstractTask && !it.configuration}.each {
 				it.configuration = configuration
 			}
-			project.dependencies {
-				// walkmod("org.walkmod:walkmod-core:${extension.version}")
-			}
+
 		}
 
 		project.task('walkmodCheck', type: WalkmodCheckTask, group: WALKMOD_GROUP) {
 			description = 'Checks which classes needs to be modified according your code transformations'
-			configuration = configuration
+
 		}
 
 		project.task('walkmodApply', type: WalkmodApplyTask, group: WALKMOD_GROUP) {
 			description = 'Upgrades code to apply all code transformations'
-			configuration = configuration
+
+		}
+
+		project.task('walkmodPatch', type: WalkmodPatchTask, group: WALKMOD_GROUP) {
+			description = 'Generates a patch according your code transformations'
+
 		}
 
 		// Add configuration for plugins classpath
@@ -61,12 +64,6 @@ class WalkmodPlugin implements Plugin<Project> {
 			walkmod
 		}
 
-		/*
-		 TODO: review if needed
-		project.task("walkmodInstall", type: WalkmodInstallTask, group: WALKMOD_GROUP) { 
-			description = 'Per ara no fa res, veure si te sentit '
-			classpath 	= configuration
-		}
-		*/
+
 	}
 }

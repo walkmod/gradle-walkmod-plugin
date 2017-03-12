@@ -24,24 +24,19 @@ apply plugin: 'build-dashboard'
 // apply from: 'gradle/publish.gradle'
 
 repositories {
-	// mavenLocal()
-    // mavenCentral()
 	jcenter()
 }
 
-ext {
-    walkmodVersion = '2.2.0'
-}
 
 dependencies {
     compile gradleApi()
 
-    compile "org.walkmod:walkmod-core:$walkmodVersion"
-	// compile 'org.walkmod:walkmod-cmd:1.0.6'
+
+    compile 'org.walkmod:walkmod-cmd:3.0.0'
 
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+
     }
     testRuntime 'cglib:cglib-nodep:3.2.0'
 
@@ -51,13 +46,13 @@ dependencies {
 
 license {
     header = rootProject.file('config/HEADER')
-    strictCheck = true
+    strictCheck = false
     ignoreFailures = false
     mapping {
         java ='SLASHSTAR_STYLE'
         groovy ='SLASHSTAR_STYLE'
     }
-    ext.year = '2016'
+    ext.year = '2017'
     excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc'])
 }
 
