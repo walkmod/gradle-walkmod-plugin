@@ -15,12 +15,42 @@
  */
 package org.walkmod.gradle
 
+import org.gradle.api.tasks.Optional
+
 
 class WalkmodPatchTask extends WalkmodAbstractTask {
 
+	@Optional
+	protected Boolean isPatchPerFile = true
+
+	@Optional
+	protected Boolean isPatchPerChange = false
+
+	@Optional
+	protected String patchFormat = "raw";
+
+	@Override
+	void buildDynamicParams(){
+		super.buildDynamicParams()
+
+		dynamicParams.put("patchPerFile", Boolean.toString(isPatchPerFile()))
+		dynamicParams.put("patchPerChange", Boolean.toString(ispatchPerChange()))
+		dynamicParams.put("patchFormat", getPatchFormat())
+	}
 	@Override
 	void executeTask(String... chains) {
 		walkmodProxy.patch(chains)
 	}
 
+	boolean isPatchPerFile() {
+		extension.isPatchPerFile?: isPatchPerFile
+	}
+
+	boolean ispatchPerChange() {
+		extension.isPatchPerChange ?: isPatchPerChange
+	}
+
+	String getPatchFormat(){
+		extension.patchFormat ?: patchFormat
+	}
 }

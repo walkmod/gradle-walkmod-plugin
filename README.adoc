@@ -7,7 +7,7 @@ Abel Salgado Romero
 :gradle-url: http://gradle.org/
 :maven-gradle-plugin: https://github.com/rpau/maven-walkmod-plugin
 :project-name: gradle-walkmod-plugin
-:walkmod-core-version: walkmod-core:2.2.0
+:walkmod-cmd: walkmod-cmd:3.0.0
 :ivy-url: http://ant.apache.org/ivy/
 
 image:http://img.shields.io/travis/abelsromero/{project-name}/master.svg["Build Status", link="https://travis-ci.org/abelsromero/{project-name}"]
@@ -20,7 +20,7 @@ This plugin adds two new tasks to allow checking and applying walkmod changes to
 WARNING: this is a preliminary version and still some work must be done.
 
 == Installation
-As long as this is a preliminary version, no fixed repository exisists. If you wish to test the tool, you'll need to install it locally from sources.
+As long as this is a preliminary version, no fixed repository exists. If you wish to test the tool, you'll need to install it locally from sources.
 A `install` task is provided to simplify the installation in maven local.
 Use the following snippet inside a Gradle build file:
 
@@ -47,6 +47,7 @@ The plugin adds a two new tasks:
 
 . `walkmodCheck`: checks for possible changes. Same as using `walkmod check` in the command tool.
 . `walkmodApply`: applies changes. Same as using `walkmod apply` in the command tool.
+. `walkmodPatch`: generates a patch. Same as using `walkmod patch` in the command tool.
 
 
 === Properties
@@ -57,119 +58,12 @@ chains:: chain names to check or apply. Type: List<String>. Default: `empty` (al
 offline:: `true` to resolve dependencies (uses {ivy-url}[Ivy]), `false` to resolve locally. Type: `boolean`. Default: `false`.
 verbose:: `true` to show extra information. Type: `boolean`. Default: `false`.
 showErrors:: `true` to get full details when something goes wrong. Type: `boolean`. Default: `true`.
-configFile:: walkmod configuration file. Type: File. Default: `walkmod.xml`.
-
+properties:: dynamic parameters for the execution
 
 === Methods
 
 None right now (this may change in the future).
 
-
-=== Using plugins
-
-Due to some unresolved classpath issues, currently, external plugins must be added as `runtime` dependencies.
-
-For instance, if you include `walkmod-imports-cleaner-plugin` 
-
-.walkmod.xml
-[source, xml]
-----
-<!DOCTYPE walkmod PUBLIC "-//WALKMOD//DTD"  "http://www.walkmod.com/dtd/walkmod-1.0.dtd" >
-<walkmod>
- <plugins>
-  <plugin groupId="org.walkmod" artifactId="walkmod-imports-cleaner-plugin" version="2.0" />
-  </plugins>
-  <chain name="example-chain" >
-    <transformation type="walkmod:commons:import-cleaner" />
-  </chain>
-</walkmod>
-----
-
-you'll need to add the plugin's jar in your `dependencies` block.
-
-.build.gradle
-[source, groovy]
-----
-dependencies {
-	runtime 'org.walkmod:walkmod-imports-cleaner-plugin:2.0'
-
-	testCompile group: 'junit', name: 'junit', version: '4.+'
-}
-----
-
-
-=== Using scripts
-
-Due to some unresolved classpath issues, currently, walkmod scripts require `org.walkmod:javalang` to be added as dependency.
-
-So, if you include the following script
-
-.script.groovy
-[source, groovy]
-----
-import org.walkmod.javalang.ast.body.ModifierSet;
-import org.walkmod.javalang.ast.body.FieldDeclaration;
-import java.lang.reflect.Modifier;
-
-for(type in node.types){	
-  def fields = type.members.findAll({it instanceof FieldDeclaration});
-  for (field in fields){
-    int modifiers = ModifierSet.addModifier(field.modifiers, Modifier.PRIVATE);
-    modifiers = ModifierSet.removeModifier(modifiers, Modifier.PROTECTED);
-    modifiers = ModifierSet.removeModifier(modifiers, Modifier.PUBLIC);
-    field.setModifiers(modifiers);
-  }
-}
-----
-
-you'll need to add `org.walkmod:javalang` in your `dependencies` block as follows:
- 
-[source, groovy]
-----
-dependencies {
-	compile 'org.walkmod:javalang:3.0.0'
-
-	testCompile group: 'junit', name: 'junit', version: '4.+'
-}
-----
-
-
-== Compatibility with previous releases
-
-
-== Configuration
-
-WARNING: This is work in progress and this option is not recommended
-
-This plugin uses `{walkmod-core-version}` by default, however you can change this by
-defining a value on the +walkmod+ extension, like so
-
-.build.gradle
-[source,groovy]
-----
-walkmod {
-    version = '1.0.7-SNAPSHOT'
-}
-----
-
-Do not forget to add an entry to the `repositories` block pointint to Maven local if you'd like to run a local version
-of any walkmod artifact (walkmod-core, walkmod-cmd, etc.).
-Here there's an example:
-
-.build.gradle
-[source,groovy]
-----
-repositories {
-    mavenLocal()   // <1>
-    mavenCentral() // <2>
-}
-
-walkmod {
-    version = '1.0.7-SNAPSHOT'
-}
-----
-<1> resolves artifacts in your local Maven repository
-<2> resolves artifacts in Maven Central
 
 == Contributing
 

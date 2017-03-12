@@ -23,17 +23,19 @@ import org.gradle.api.Project
  */
 class WalkmodExtension {
 
-    String version = '2.2.0'
-	
-	List<String> chains = null
+   List<String> chains = null
 
 	Boolean offline = Boolean.FALSE
 
 	Boolean verbose = Boolean.TRUE
 
 	Boolean printErrors = Boolean.TRUE
-	
-	File configFile = new File('walkmod.xml')
+
+    Boolean isPatchPerFile =  Boolean.TRUE
+
+    Boolean isPatchPerChange = Boolean.FALSE
+
+    String patchFormat = "raw";
 
     Project project
 

@@ -21,7 +21,11 @@ apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'com.github.hierynomus.license'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'build-dashboard'
-// apply from: 'gradle/publish.gradle'
+apply plugin: 'maven'
+apply plugin: 'idea'
+
+group = 'org.walkmod'
+version = '0.0.1'
 
 repositories {
 	jcenter()
@@ -30,7 +34,6 @@ repositories {
 
 dependencies {
     compile gradleApi()
-
 
     compile 'org.walkmod:walkmod-cmd:3.0.0'
 

@@ -23,7 +23,6 @@ import org.walkmod.OptionsBuilder
 import org.walkmod.WalkModFacade
 import org.walkmod.conf.ConfigurationProvider
 import org.walkmod.conf.entities.impl.ConfigurationImpl
-import org.walkmod.gradle.configuration.GradleConfigurationProvider
 
 
 /**
@@ -36,16 +35,20 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 	protected List<String> chains
 
 	@Optional
-	protected Boolean offline
+	protected Boolean offline = false
 
 	@Optional
-	protected Boolean verbose
+	protected Boolean verbose = false
 
 	@Optional
-	protected Boolean printErrors
+	protected Boolean printErrors = false
 
 	@Optional
-	protected File configFile
+    protected String properties
+
+
+
+    protected Map<String, Object> dynamicParams
 
 	/**
 	 * Delegated walkmod service  
@@ -68,7 +71,7 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 
         initWalkmod()
 
-        executeTask(chains)
+        executeTask(getChains())
 
         if (!walkmodProxy) {
             initWalkmod()
@@ -77,49 +80,76 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 
 	abstract void executeTask(String... chains)
 
+     void buildDynamicParams(){
+         if(dynamicParams == null){
+             dynamicParams= new HashMap<String, Object>()
+         }
+        if (properties != null) {
+            String[] parts = properties.split('\\=| ')
+            int two = 2
+            if (parts.length % two == 0) {
+
+                for (int i = 0; i < parts.length - 1; i += two) {
+                    dynamicParams.put(parts[i].trim(), parts[i + 1].trim())
+                }
+            }
+        }
+    }
+
 
 
 	void initWalkmod() {
 		if (!walkmodProxy) {
 
-			logger.lifecycle("Creating facade config:$configFile o:$offline v:$verbose e:$printErrors")
             String configName = 'walkmod'
-            ConfigurationProvider confProvider = new GradleConfigurationProvider(new ConfigurationImpl())
-            confProvider.defaultClassloader = project.extensions.findByName(configName).get
-            confProvider.artifacts = project.configurations.getByName(configName).artifacts
 
-            OptionsBuilder options = OptionsBuilder.options().offline(offline).verbose(verbose).printErrors(printErrors)
+            buildDynamicParams()
+
+            OptionsBuilder options = OptionsBuilder.options().offline(getOffline()).verbose(getVerbose()).printErrors(isShowErrors())
+                    .dynamicArgs(dynamicParams)
 
             project.configurations.getByName(configName).artifacts.each {
                 println "$it"
             }
 
-			walkmodProxy = new WalkmodProxyImpl(delegate: new WalkModFacade(configFile, options, confProvider))
+			walkmodProxy = new WalkmodProxyImpl(delegate: new WalkModFacade(options))
 		}
 	}
 
-    List<String> getChains() {
-        chains ?: extension.chains
+    String[] getChains() {
+        List<String> aux = chains ?: extension.chains
+        if(aux != null){
+            String[] res = new String[aux.size()];
+            aux.toArray(res)
+            return  res
+        }
+        return null
+
     }
 
     Object getOffline() {
-        offline ?: extension.offline
+        extension.offline?: offline
     }
 
     Object getVerbose() {
-        verbose ?: extension.verbose
+        extension.verbose ?: verbose
     }
 
     boolean isShowErrors() {
-		printErrors ?: extension.printErrors
-    }
-
-	File getConfigFile() {
-        configFile ?: extension.configFile
+		extension.printErrors ?: printErrors
     }
 
     Configuration getConfiguration() {
         configuration
     }
 
+    String getProperties(){
+        extension.properties?:properties
+    }
+
+
+
+    Map<String,Object> getDynamicParams(){
+        dynamicParams
+    }
 }
