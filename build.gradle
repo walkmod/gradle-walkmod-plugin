@@ -138,10 +138,10 @@ publishing {
 }
 
 pluginBundle {
-    website = 'http://www.gradle.org/'
-    vcsUrl = 'https://github.com/gradle/gradle'
+    website = 'http://www.walkmod.com'
+    vcsUrl = 'https://github.com/walkmod/gradle-walkmod-plugin'
     description = 'Gradle WalkMod plugin'
-    tags = ['walkmod', 'coding style']
+    tags = ['walkmod', 'coding style', 'fixing', 'static code analysis']
 
     plugins {
         walkmodPlugin {
