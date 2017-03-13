@@ -23,6 +23,7 @@ apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'build-dashboard'
 apply plugin: 'maven'
 apply plugin: 'idea'
+apply plugin: 'maven-publish'
 
 group = 'org.walkmod'
 version = '0.0.1'
@@ -42,10 +43,9 @@ dependencies {
 
     }
     testRuntime 'cglib:cglib-nodep:3.2.0'
-
-    // Version of Gradle Wrapper
-    // testRuntime 'org.codehaus.groovy:groovy-all:2.4.4'
 }
+
+
 
 license {
     header = rootProject.file('config/HEADER')
@@ -79,8 +79,57 @@ task sourceJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
 artifacts {
     sourceJar
+    javadocJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+
+            pom.withXml {
+                asNode().appendNode('description',
+                        'gradle plugin to run walkmod')
+                asNode().appendNode('name',
+                        'gradle-walkmod-plugin')
+                asNode().appendNode('url',
+                        'https://github.com/walkmod/gradle-walkmod-plugin')
+                asNode().appendNode('developers').appendNode('developer').
+                        appendNode('id', 'rpau').parent().
+                        appendNode('name', 'Raquel Pau').parent().
+                        appendNode('email', 'rpau@walkmod.com')
+                asNode().appendNode('licenses').appendNode('license').
+                        appendNode('name', 'Apache License, Version 2.0').parent().
+                        appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.html')
+                asNode().appendNode('scm').
+                        appendNode('url', 'https://github.com/walkmod/gradle-walkmod-plugin')
+                        .parent().
+                        appendNode('connection', 'https://github.com/walkmod/gradle-walkmod-plugin.git')
+            }
+        }
+
+    }
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "$buildDir/repo"
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {

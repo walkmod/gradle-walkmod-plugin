@@ -30,11 +30,16 @@ Use the following snippet inside a Gradle build file:
 ----
 buildscript {
     repositories {
-        mavenLocal()
+       mavenCentral()
+       jcenter()
     }
 
     dependencies {
-        classpath 'org.walkmod:{project-name}:{version}'
+        classpath 'org.walkmod:gradle-walkmod-plugin:{version}'
+    }
+
+    walkmod {
+      chains = ['pmd']
     }
 }
 
@@ -43,7 +48,7 @@ apply plugin: 'walkmod'
 
 == Usage
 
-The plugin adds a two new tasks:
+The plugin adds a three new tasks:
 
 . `walkmodCheck`: checks for possible changes. Same as using `walkmod check` in the command tool.
 . `walkmodApply`: applies changes. Same as using `walkmod apply` in the command tool.
@@ -58,7 +63,7 @@ chains:: chain names to check or apply. Type: List<String>. Default: `empty` (al
 offline:: `true` to resolve dependencies (uses {ivy-url}[Ivy]), `false` to resolve locally. Type: `boolean`. Default: `false`.
 verbose:: `true` to show extra information. Type: `boolean`. Default: `false`.
 showErrors:: `true` to get full details when something goes wrong. Type: `boolean`. Default: `true`.
-properties:: dynamic parameters for the execution
+properties:: dynamic parameters for the execution. Type: String
 
 === Methods
 
@@ -86,8 +91,3 @@ Here are some ways *you* can contribute:
 * by refactoring code
 * by fixing {uri-issues}[issues]
 * by reviewing patches
-
-== Special thanks
-
-* To the {walkmod-url}[Walkmod] team for such a tool.
-* To @aalmiray's {asciidoctor-gradle-plugin-url}[asciidoctor-gradle-plugin] which served as foundation for this one.
