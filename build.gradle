@@ -2,6 +2,9 @@ buildscript {
     repositories {
         mavenCentral()
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 
     dependencies {
@@ -11,6 +14,7 @@ buildscript {
         classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.5-beta-6'
         classpath 'org.codehaus.groovy:groovy-backports-compat23:2.3.6'
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
     }
 }
 
@@ -24,6 +28,7 @@ apply plugin: 'build-dashboard'
 apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
+apply plugin: "com.gradle.plugin-publish"
 
 group = 'org.walkmod'
 version = '0.0.1'
@@ -128,6 +133,20 @@ publishing {
         maven {
             // change to point to your repo, e.g. http://my.org/repo
             url "$buildDir/repo"
+        }
+    }
+}
+
+pluginBundle {
+    website = 'http://www.gradle.org/'
+    vcsUrl = 'https://github.com/gradle/gradle'
+    description = 'Gradle WalkMod plugin'
+    tags = ['walkmod', 'coding style']
+
+    plugins {
+        walkmodPlugin {
+            id = 'org.walkmod.gradle-walkmod-plugin'
+            displayName = 'Gradle WalkMod plugin'
         }
     }
 }
