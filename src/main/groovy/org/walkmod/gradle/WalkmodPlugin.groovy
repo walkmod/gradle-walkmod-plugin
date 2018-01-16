@@ -32,32 +32,28 @@ class WalkmodPlugin implements Plugin<Project> {
 
 	void apply(Project project) {
 		project.apply(plugin: 'base')
-
 		project.extensions.create(EXTENSION, WalkmodExtension, project)
 
 		Configuration config = project.configurations.maybeCreate(EXTENSION)
+		config.extendsFrom(project.getConfigurations().getByName("testCompile"))
 
 		project.afterEvaluate {
 			project.tasks.findAll {it instanceof WalkmodAbstractTask && !it.configuration}.each {
 				it.configuration = config
 			}
-
 		}
 
 		project.task('walkmodCheck', type: WalkmodCheckTask, group: WALKMOD_GROUP) {
 			description = 'Checks which classes needs to be modified according your code transformations'
-			configuration = config
-		}
+		}.dependsOn "test"
 
 		project.task('walkmodApply', type: WalkmodApplyTask, group: WALKMOD_GROUP) {
 			description = 'Upgrades code to apply all code transformations'
-			configuration = config
-		}
+		}.dependsOn "test"
 
 		project.task('walkmodPatch', type: WalkmodPatchTask, group: WALKMOD_GROUP) {
 			description = 'Generates a patch according your code transformations'
-			configuration = config
-		}
+		}.dependsOn "test"
 
 		// Add configuration for plugins classpath
 		project.configurations {

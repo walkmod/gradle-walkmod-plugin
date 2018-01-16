@@ -16,14 +16,12 @@
 package org.walkmod.gradle
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.artifacts.Configuration
+import org.gradle.api.Project
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.walkmod.OptionsBuilder
 import org.walkmod.WalkModFacade
-import org.walkmod.conf.ConfigurationProvider
-import org.walkmod.conf.entities.impl.ConfigurationImpl
-
+import org.gradle.api.artifacts.Configuration
 
 /**
  * Base abstract Walkmod task 
@@ -46,8 +44,6 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 	@Optional
     protected String properties
 
-
-
     protected Map<String, Object> dynamicParams
 
 	/**
@@ -55,10 +51,6 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 	 */
 	WalkmodProxy walkmodProxy
 	final WalkmodExtension extension
-
-	Configuration configuration
-	static ClassLoader cl
-
 
     protected WalkmodAbstractTask () {
         if (!extension) {
@@ -80,10 +72,12 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 
 	abstract void executeTask(String... chains)
 
-     void buildDynamicParams(){
-         if(dynamicParams == null){
-             dynamicParams= new HashMap<String, Object>()
-         }
+    void buildDynamicParams() {
+
+        if (dynamicParams == null) {
+            dynamicParams = new HashMap<String, Object>()
+        }
+
         if (properties != null) {
             String[] parts = properties.split('\\=| ')
             int two = 2
@@ -94,9 +88,12 @@ abstract class WalkmodAbstractTask extends DefaultTask {
                 }
             }
         }
+
+        dynamicParams.put("classLoader",
+                new URLClassLoader(
+                        (project.files(project.sourceSets.test.runtimeClasspath).getFiles())
+                                .collect { file -> file.toURL() } as URL[]))
     }
-
-
 
 	void initWalkmod() {
 		if (!walkmodProxy) {
@@ -105,7 +102,10 @@ abstract class WalkmodAbstractTask extends DefaultTask {
 
             buildDynamicParams()
 
-            OptionsBuilder options = OptionsBuilder.options().offline(getOffline()).verbose(getVerbose()).printErrors(isShowErrors())
+            OptionsBuilder options = OptionsBuilder.options()
+                    .offline(getOffline())
+                    .verbose(getVerbose())
+                    .printErrors(isShowErrors())
                     .dynamicArgs(dynamicParams)
 
             project.configurations.getByName(configName).artifacts.each {
@@ -124,7 +124,6 @@ abstract class WalkmodAbstractTask extends DefaultTask {
             return  res
         }
         return null
-
     }
 
     Object getOffline() {
@@ -146,8 +145,6 @@ abstract class WalkmodAbstractTask extends DefaultTask {
     String getProperties(){
         extension.properties?:properties
     }
-
-
 
     Map<String,Object> getDynamicParams(){
         dynamicParams

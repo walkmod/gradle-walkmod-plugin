@@ -47,7 +47,6 @@ class WalkmodAbstractTaskSpec extends Specification {
 			!extension.offline
 			extension.verbose
 			extension.printErrors
-			extension.configFile == new File("walkmod.xml")
 	}
 	
 	def 'Tasks default values'() {
@@ -58,10 +57,9 @@ class WalkmodAbstractTaskSpec extends Specification {
 			WalkmodAbstractTask task = project.tasks.findByName(CHECK_TASK)
 			task != null
 			task.@chains  == null
-			task.@offline == null
-			task.@verbose == null
-			task.@printErrors == null
-			task.@configFile == null
+			task.@offline == false
+			task.@verbose == false
+			task.@printErrors == false
 	}
 	
 	def 'Task should overwrite extension values when null'() {
@@ -72,10 +70,9 @@ class WalkmodAbstractTaskSpec extends Specification {
 			WalkmodAbstractTask task = project.tasks.findByName(CHECK_TASK)
 			task != null
 			task.@chains  == null
-			task.@offline == null
-			task.@verbose == null
-			task.@printErrors == null
-			task.@configFile == null
+			task.@offline == false
+			task.@verbose == false
+			task.@printErrors == false
 
 		then: 'returned values are the ones of the the extension'
 			task != null
@@ -85,12 +82,10 @@ class WalkmodAbstractTaskSpec extends Specification {
 			!extension.offline
 			extension.verbose
 			extension.printErrors
-			extension.configFile == new File("walkmod.xml")
 			// values comparision
 			task.chains  == extension.chains
 			task.offline == extension.offline
 			task.verbose == extension.verbose
 			task.showErrors == extension.printErrors
-			task.configFile == extension.configFile
 	}
 }

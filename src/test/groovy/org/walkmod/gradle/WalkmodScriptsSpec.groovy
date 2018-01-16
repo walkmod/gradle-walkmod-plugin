@@ -34,20 +34,28 @@ class WalkmodScriptsSpec extends Specification {
 	Project project
 
 	def setup() {
-		project = ProjectBuilder.builder().build()
+		project = ProjectBuilder.builder().withProjectDir(new File("src/test/resources/testProject")).build()
 	}
 
 	def "Applies script"() {
 		when:
+		    project.apply plugin: 'java'
 			project.apply plugin: WalkmodPlugin
+		    project.repositories {
+			   mavenCentral()
+		    }
+		    project.dependencies.add("compile", 'org.walkmod:walkmod-cmd:3.0.0')
 
 		then:
 			project[EXTENSION] != null
-	
+
 			// validate check task
-			Task checkTask = project.tasks.findByName('walkmodCheck')
+		    WalkmodCheckTask checkTask = project.tasks.findByName('walkmodCheck')
 			checkTask != null
 			checkTask.group == WALKMOD_GROUP
+		    checkTask.execute()
+		    URLClassLoader loader = checkTask.dynamicParams.get("classLoader")
+		    loader.URLs.size() > 1
 	
 			// validate check task
 			Task applyTask = project.tasks.findByName('walkmodApply')
