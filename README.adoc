@@ -62,7 +62,7 @@ Each tasks provides the following properties for its configuration:
 chains:: chain names to check or apply. Type: List<String>. Default: `empty` (all chains).
 offline:: `true` to resolve dependencies (uses {ivy-url}[Ivy]), `false` to resolve locally. Type: `boolean`. Default: `false`.
 verbose:: `true` to show extra information. Type: `boolean`. Default: `false`.
-showErrors:: `true` to get full details when something goes wrong. Type: `boolean`. Default: `true`.
+showErrors:: `true` to get full details when something goes wrong. Type: `boolean`. Default: `false`.
 properties:: dynamic parameters for the execution. Type: String
 
 === Methods
