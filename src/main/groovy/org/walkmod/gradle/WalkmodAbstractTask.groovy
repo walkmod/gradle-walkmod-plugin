@@ -16,43 +16,41 @@
 package org.walkmod.gradle
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.walkmod.OptionsBuilder
 import org.walkmod.WalkModFacade
-import org.gradle.api.artifacts.Configuration
 
 /**
- * Base abstract Walkmod task 
- * @author abelsromero
+ * Base abstract Walkmod task
  */
 abstract class WalkmodAbstractTask extends DefaultTask {
 
-	@Optional
-	protected List<String> chains
+    @Optional
+    protected List<String> chains
 
-	@Optional
-	protected Boolean offline = false
+    @Optional
+    protected Boolean offline = false
 
-	@Optional
-	protected Boolean verbose = false
+    @Optional
+    protected Boolean verbose = false
 
-	@Optional
-	protected Boolean printErrors = false
+    @Optional
+    protected Boolean printErrors = false
 
-	@Optional
+    @Optional
     protected String properties
 
     protected Map<String, Object> dynamicParams
 
-	/**
-	 * Delegated walkmod service  
-	 */
-	WalkmodProxy walkmodProxy
-	final WalkmodExtension extension
+    /**
+     * Delegated walkmod service
+     */
+    WalkmodProxy walkmodProxy
+    final WalkmodExtension extension
 
-    protected WalkmodAbstractTask () {
+    protected WalkmodAbstractTask() {
         if (!extension) {
             extension = project.extensions.getByName(WalkmodPlugin.EXTENSION)
         }
@@ -70,7 +68,7 @@ abstract class WalkmodAbstractTask extends DefaultTask {
         }
     }
 
-	abstract void executeTask(String... chains)
+    abstract void executeTask(String... chains)
 
     void buildDynamicParams() {
 
@@ -78,12 +76,13 @@ abstract class WalkmodAbstractTask extends DefaultTask {
             dynamicParams = new HashMap<String, Object>()
         }
 
-        if (properties != null) {
-            String[] parts = properties.split('\\=| ')
+        if (getProperties() != null) {
+            String[] parts = getProperties().split('\\=| ')
             int two = 2
             if (parts.length % two == 0) {
 
                 for (int i = 0; i < parts.length - 1; i += two) {
+                    System.out.println(parts[i].trim()+ " = "+ parts[i + 1].trim())
                     dynamicParams.put(parts[i].trim(), parts[i + 1].trim())
                 }
             }
@@ -95,8 +94,8 @@ abstract class WalkmodAbstractTask extends DefaultTask {
                                 .collect { file -> file.toURL() } as URL[]))
     }
 
-	void initWalkmod() {
-		if (!walkmodProxy) {
+    void initWalkmod() {
+        if (!walkmodProxy) {
 
             String configName = 'walkmod'
 
@@ -112,22 +111,22 @@ abstract class WalkmodAbstractTask extends DefaultTask {
                 println "$it"
             }
 
-			walkmodProxy = new WalkmodProxyImpl(delegate: new WalkModFacade(options))
-		}
-	}
+            walkmodProxy = new WalkmodProxyImpl(delegate: new WalkModFacade(options))
+        }
+    }
 
     String[] getChains() {
         List<String> aux = chains ?: extension.chains
-        if(aux != null){
+        if (aux != null) {
             String[] res = new String[aux.size()];
             aux.toArray(res)
-            return  res
+            return res
         }
         return null
     }
 
     Object getOffline() {
-        extension.offline?: offline
+        extension.offline ?: offline
     }
 
     Object getVerbose() {
@@ -135,18 +134,14 @@ abstract class WalkmodAbstractTask extends DefaultTask {
     }
 
     boolean isShowErrors() {
-		extension.printErrors ?: printErrors
-    }
-
-    Configuration getConfiguration() {
-        configuration
+        extension.printErrors ?: printErrors
     }
 
     String getProperties(){
-        extension.properties?:properties
+        extension.properties?: properties
     }
 
-    Map<String,Object> getDynamicParams(){
+    Map<String, Object> getDynamicParams() {
         dynamicParams
     }
 }

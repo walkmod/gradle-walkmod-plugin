@@ -17,7 +17,6 @@ package org.walkmod.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Configuration
 
 /**
  * Main Plugin class
@@ -33,14 +32,6 @@ class WalkmodPlugin implements Plugin<Project> {
 	void apply(Project project) {
 		project.apply(plugin: 'base')
 		project.extensions.create(EXTENSION, WalkmodExtension, project)
-
-		Configuration config = project.configurations.maybeCreate(EXTENSION)
-
-		project.afterEvaluate {
-			project.tasks.findAll {it instanceof WalkmodAbstractTask && !it.configuration}.each {
-				it.configuration = config
-			}
-		}
 
 		project.task('walkmodCheck', type: WalkmodCheckTask, group: WALKMOD_GROUP) {
 			description = 'Checks which classes needs to be modified according your code transformations'
@@ -58,7 +49,6 @@ class WalkmodPlugin implements Plugin<Project> {
 		project.configurations {
 			walkmod
 		}
-
 
 	}
 }

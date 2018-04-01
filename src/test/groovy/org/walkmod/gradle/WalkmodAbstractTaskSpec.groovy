@@ -78,6 +78,7 @@ class WalkmodAbstractTaskSpec extends Specification {
 			// extension values
 			WalkmodExtension extension = project.walkmod
 			extension.chains == null
+			extension.properties == null
 			!extension.offline
 			extension.verbose
 			extension.printErrors

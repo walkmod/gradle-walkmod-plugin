@@ -23,15 +23,17 @@ import org.gradle.api.Project
  */
 class WalkmodExtension {
 
-   List<String> chains = null
+    List<String> chains = null
 
-	Boolean offline = Boolean.FALSE
+    String properties = null;
 
-	Boolean verbose = Boolean.TRUE
+    Boolean offline = Boolean.FALSE
 
-	Boolean printErrors = Boolean.TRUE
+    Boolean verbose = Boolean.FALSE
 
-    Boolean isPatchPerFile =  Boolean.TRUE
+    Boolean printErrors = Boolean.TRUE
+
+    Boolean isPatchPerFile = Boolean.TRUE
 
     Boolean isPatchPerChange = Boolean.FALSE
 
