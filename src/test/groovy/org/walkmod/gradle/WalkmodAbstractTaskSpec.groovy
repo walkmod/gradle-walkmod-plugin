@@ -44,7 +44,7 @@ class WalkmodAbstractTaskSpec extends Specification {
 			WalkmodExtension extension = project.walkmod
 			extension.chains == null
 			!extension.offline
-			extension.verbose
+			extension.verbose == false
 			extension.printErrors
 	}
 	
@@ -80,7 +80,7 @@ class WalkmodAbstractTaskSpec extends Specification {
 			extension.chains == null
 			extension.properties == null
 			!extension.offline
-			extension.verbose
+			extension.verbose == false
 			extension.printErrors
 			// values comparision
 			task.chains  == extension.chains

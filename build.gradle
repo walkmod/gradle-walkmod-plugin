@@ -8,9 +8,6 @@ buildscript {
     }
 
     dependencies {
-		classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.0.0'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
         classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.5-beta-6'
         classpath 'org.codehaus.groovy:groovy-backports-compat23:2.3.6'
@@ -19,9 +16,6 @@ buildscript {
 }
 
 apply plugin: 'groovy'
-apply plugin: 'codenarc'
-apply plugin: 'cobertura'
-apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'com.github.hierynomus.license'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'build-dashboard'
@@ -31,7 +25,7 @@ apply plugin: 'maven-publish'
 apply plugin: "com.gradle.plugin-publish"
 
 group = 'org.walkmod'
-version = '0.0.2'
+version = '0.0.3'
 
 repositories {
 	jcenter()
@@ -62,19 +56,6 @@ license {
     }
     ext.year = '2017'
     excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc'])
-}
-
-cobertura {
-    coverageFormats = ['html', 'xml']
-    coverageSourceDirs = sourceSets.main.groovy.srcDirs
-}
-
-cobertura.coverageSourceDirs = sourceSets.main.groovy.srcDirs
-
-codenarc {
-    configFile = file('config/codenarc/codenarc.groovy')
-    // run codenarc on production sources only
-    sourceSets = [project.sourceSets.main]
 }
 
 task sourceJar(type: Jar) {
