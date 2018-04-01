@@ -4,7 +4,6 @@ script: ./gradlew clean test
 
 jdk:
  - oraclejdk8
- - openjdk7
 
 before_install:
  - chmod +x gradlew
