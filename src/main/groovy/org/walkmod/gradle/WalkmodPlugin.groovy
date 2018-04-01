@@ -35,7 +35,6 @@ class WalkmodPlugin implements Plugin<Project> {
 		project.extensions.create(EXTENSION, WalkmodExtension, project)
 
 		Configuration config = project.configurations.maybeCreate(EXTENSION)
-		config.extendsFrom(project.getConfigurations().getByName("testCompile"))
 
 		project.afterEvaluate {
 			project.tasks.findAll {it instanceof WalkmodAbstractTask && !it.configuration}.each {

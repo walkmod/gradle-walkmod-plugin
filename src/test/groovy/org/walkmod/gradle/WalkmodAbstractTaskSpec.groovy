@@ -23,7 +23,6 @@ import spock.lang.Specification
 /**
  * Abstract task specification.
  *
- * @author abelsromero
  */
 class WalkmodAbstractTaskSpec extends Specification {
 
