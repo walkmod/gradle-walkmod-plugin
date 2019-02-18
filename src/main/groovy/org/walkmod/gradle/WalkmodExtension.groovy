@@ -37,6 +37,8 @@ class WalkmodExtension {
 
     Boolean isPatchPerChange = Boolean.FALSE
 
+    String config = "";
+
     String patchFormat = "raw";
 
     Project project

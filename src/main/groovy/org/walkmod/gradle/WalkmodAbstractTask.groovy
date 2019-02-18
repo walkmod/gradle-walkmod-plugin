@@ -40,6 +40,9 @@ abstract class WalkmodAbstractTask extends DefaultTask {
     protected Boolean printErrors = false
 
     @Optional
+    protected String config = ""
+
+    @Optional
     protected String properties
 
     protected Map<String, Object> dynamicParams
@@ -106,6 +109,10 @@ abstract class WalkmodAbstractTask extends DefaultTask {
                     .verbose(getVerbose())
                     .printErrors(isShowErrors())
                     .dynamicArgs(dynamicParams)
+
+            if (!config.isEmpty()) {
+                options.configurationFile(configurationFile)
+            }
 
             project.configurations.getByName(configName).artifacts.each {
                 println "$it"

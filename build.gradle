@@ -8,7 +8,6 @@ buildscript {
     }
 
     dependencies {
-        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.5-beta-6'
         classpath 'org.codehaus.groovy:groovy-backports-compat23:2.3.6'
         classpath "com.gradle.publish:plugin-publish-plugin:0.9.7"
@@ -16,7 +15,6 @@ buildscript {
 }
 
 apply plugin: 'groovy'
-apply plugin: 'com.github.hierynomus.license'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'build-dashboard'
 apply plugin: 'maven'
@@ -42,20 +40,6 @@ dependencies {
 
     }
     testRuntime 'cglib:cglib-nodep:3.2.0'
-}
-
-
-
-license {
-    header = rootProject.file('config/HEADER')
-    strictCheck = false
-    ignoreFailures = false
-    mapping {
-        java ='SLASHSTAR_STYLE'
-        groovy ='SLASHSTAR_STYLE'
-    }
-    ext.year = '2017'
-    excludes(['**/*.ad', '**/*.asciidoc', '**/*.adoc'])
 }
 
 task sourceJar(type: Jar) {
