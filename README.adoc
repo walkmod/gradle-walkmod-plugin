@@ -64,7 +64,7 @@ offline:: `true` to resolve dependencies (uses {ivy-url}[Ivy]), `false` to resol
 verbose:: `true` to show extra information. Type: `boolean`. Default: `false`.
 showErrors:: `true` to get full details when something goes wrong. Type: `boolean`. Default: `false`.
 properties:: dynamic parameters for the execution. Type: String
-
+config:: walkmod configuration file (e.g walkmod.xml). Default: `` (empty).
 === Methods
 
 None right now (this may change in the future).

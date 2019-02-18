@@ -1,6 +1,6 @@
 language: groovy
 
-script: ./gradlew clean test
+script: ./gradlew test
 
 jdk:
  - oraclejdk8

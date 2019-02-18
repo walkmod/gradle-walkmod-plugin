@@ -58,6 +58,7 @@ class WalkmodAbstractTaskSpec extends Specification {
 			task.@chains  == null
 			task.@offline == false
 			task.@verbose == false
+		    task.@config == ""
 			task.@printErrors == false
 	}
 	
@@ -71,6 +72,7 @@ class WalkmodAbstractTaskSpec extends Specification {
 			task.@chains  == null
 			task.@offline == false
 			task.@verbose == false
+			task.@config == ""
 			task.@printErrors == false
 
 		then: 'returned values are the ones of the the extension'
@@ -86,6 +88,7 @@ class WalkmodAbstractTaskSpec extends Specification {
 			task.chains  == extension.chains
 			task.offline == extension.offline
 			task.verbose == extension.verbose
+			task.config == extension.config
 			task.showErrors == extension.printErrors
 	}
 }
